@@ -1,0 +1,42 @@
+{
+  "name": "igor-i-generate-diff",
+  "version": "0.0.3",
+  "description": "This is a Level 2 project in Hexlet.io",
+  "main": "dist/index.js",
+  "bin": {
+    "gen-diff": "dist/bin/gen-diff.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "babel-node": "babel-node",
+    "eslint": "eslint",
+    "build": "NODE_ENV=production babel src --out-dir dist --source-maps inline",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/igor-i/project-lvl2-s169.git"
+  },
+  "author": "Igor Inkovskiy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/igor-i/project-lvl2-s169/issues"
+  },
+  "homepage": "https://github.com/igor-i/project-lvl2-s169#readme",
+  "dependencies": {
+    "readline-sync": "*",
+    "commander": "*"
+  },
+  "devDependencies": {
+    "babel-cli": "*",
+    "babel-core": "*",
+    "babel-eslint": "*",
+    "babel-preset-env": "*",
+    "babel-preset-stage-0": "*",
+    "eslint": "^4.11.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.8.0"
+  }
+}

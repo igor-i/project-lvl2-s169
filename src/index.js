@@ -24,23 +24,23 @@ const compare = (obj1, obj2) => {
     const value2 = obj2[key];
     if (obj1HasKey && !obj2HasKey) {
       return [...acc, {
-        node: [key],
+        node: key,
         type: 'removed',
         from: value1,
-        to: undefined,
+        to: '',
       }];
     }
     if (!obj1HasKey && obj2HasKey) {
       return [...acc, {
-        node: [key],
+        node: key,
         type: 'added',
-        from: undefined,
+        from: '',
         to: value2,
       }];
     }
     if ((obj1HasKey && obj2HasKey) && (value1 === value2)) {
       return [...acc, {
-        node: [key],
+        node: key,
         type: 'unchanged',
         from: value1,
         to: value2,
@@ -48,7 +48,7 @@ const compare = (obj1, obj2) => {
     }
     if ((obj1HasKey && obj2HasKey) && (value1 !== value2)) {
       return [...acc, {
-        node: [key],
+        node: key,
         type: 'changed',
         from: value1,
         to: value2,

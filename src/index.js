@@ -2,64 +2,84 @@ import fs from 'fs';
 import yaml from 'js-yaml';
 import ini from 'ini';
 import path from 'path';
+import _ from 'lodash';
 
 export const eol = '\n';
 
-const mappingParseContent = {
-  '.json': fileContent => JSON.parse(fileContent),
-  '.yaml': fileContent => yaml.safeLoad(fileContent),
-  '.ini': fileContent => ini.parse(fileContent),
+const mappingParse = {
+  '.json': JSON.parse,
+  '.yaml': yaml.safeLoad,
+  '.ini': ini.parse,
 };
 
-const uploadFile = (pathToFile) => {
-  const fileExtension = path.extname(pathToFile);
-  const fileContent = fs.readFileSync(pathToFile, 'utf8');
-  return mappingParseContent[fileExtension](fileContent);
-};
+const parse = (fileContent, fileExt) => mappingParse[fileExt](fileContent);
 
 const compare = (obj1, obj2) => {
   const keys = new Set([...Object.keys(obj1), ...Object.keys(obj2)]);
   return Array.from(keys).reduce((acc, key) => {
+    const obj1HasKey = key in obj1;
+    const obj2HasKey = key in obj2;
     const value1 = obj1[key];
     const value2 = obj2[key];
-    const astNode = { node: [key] };
-    if (key in obj1 && key in obj2) {
-      astNode.type = value1 === value2 ? 'unchanged' : 'changed';
-      astNode.from = value1;
-      astNode.to = value2;
-    } else if (key in obj1) {
-      astNode.type = 'removed';
-      astNode.from = value1;
-      astNode.to = undefined;
-    } else {
-      astNode.type = 'added';
-      astNode.from = undefined;
-      astNode.to = value2;
+    if (obj1HasKey && !obj2HasKey) {
+      return [...acc, {
+        node: [key],
+        type: 'removed',
+        from: value1,
+        to: undefined,
+      }];
     }
-
-    return [...acc, astNode];
+    if (!obj1HasKey && obj2HasKey) {
+      return [...acc, {
+        node: [key],
+        type: 'added',
+        from: undefined,
+        to: value2,
+      }];
+    }
+    if ((obj1HasKey && obj2HasKey) && (value1 === value2)) {
+      return [...acc, {
+        node: [key],
+        type: 'unchanged',
+        from: value1,
+        to: value2,
+      }];
+    }
+    if ((obj1HasKey && obj2HasKey) && (value1 !== value2)) {
+      return [...acc, {
+        node: [key],
+        type: 'changed',
+        from: value1,
+        to: value2,
+      }];
+    }
+    return acc;
   }, []);
 };
 
-const outputReport = (ast) => {
-  const resultStrings = ast.map((node) => {
+const report = (ast) => {
+  const resultStrings = ast.reduce((acc, node) => {
     switch (node.type) {
       case 'changed':
-        return [` + ${node.node}: ${node.to}`, ` - ${node.node}: ${node.from}`].join(eol);
+        return [...acc, ` + ${node.node}: ${node.to}`, ` - ${node.node}: ${node.from}`];
       case 'removed':
-        return ` - ${node.node}: ${node.from}`;
+        return [...acc, ` - ${node.node}: ${node.from}`];
       case 'added':
-        return ` + ${node.node}: ${node.to}`;
+        return [...acc, ` + ${node.node}: ${node.to}`];
+      case 'unchanged':
+        return [...acc, `   ${node.node}: ${node.to}`];
       default:
-        return `   ${node.node}: ${node.to}`; // unchanged
+        return acc;
     }
-  });
+  }, []);
 
-  return ['{', ...resultStrings, '}'].join(eol);
+  return _.flatten(['{', resultStrings, '}']).join(eol);
 };
 
 export const genDiff = (pathToFile1, pathToFile2) => {
-  const file1 = uploadFile(pathToFile1);
-  const file2 = uploadFile(pathToFile2);
-  return outputReport(compare(file1, file2));
+  const fileContent1 = fs.readFileSync(pathToFile1, 'utf8');
+  const fileContent2 = fs.readFileSync(pathToFile2, 'utf8');
+  const fileExt1 = path.extname(pathToFile1);
+  const fileExt2 = path.extname(pathToFile2);
+  return report(compare(parse(fileContent1, fileExt1), parse(fileContent2, fileExt2)));
 };

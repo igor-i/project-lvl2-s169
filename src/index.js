@@ -1,5 +1,6 @@
 import fs from 'fs';
 import yaml from 'js-yaml';
+import ini from 'ini';
 import path from 'path';
 
 export const eol = '\n';
@@ -7,6 +8,7 @@ export const eol = '\n';
 const mappingParseContent = {
   '.json': fileContent => JSON.parse(fileContent),
   '.yaml': fileContent => yaml.safeLoad(fileContent),
+  '.ini': fileContent => ini.parse(fileContent),
 };
 
 const uploadFile = (pathToFile) => {

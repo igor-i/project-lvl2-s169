@@ -22,3 +22,9 @@ test('flat yaml difference', () => {
   const secondConfig = '__tests__/__fixtures__/after.yaml';
   expect(genDiff(firstConfig, secondConfig)).toBe(rightResult.join(eol));
 });
+
+test('flat ini difference', () => {
+  const firstConfig = '__tests__/__fixtures__/before.ini';
+  const secondConfig = '__tests__/__fixtures__/after.ini';
+  expect(genDiff(firstConfig, secondConfig)).toBe(rightResult.join(eol));
+});

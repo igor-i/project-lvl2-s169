@@ -16,7 +16,7 @@ const parse = (fileContent, fileExt) => mappingParse[fileExt](fileContent);
 
 const compare = (obj1, obj2) => {
   const keys = _.union(_.keys(obj1), _.keys(obj2));
-  return Array.from(keys).reduce((acc, key) => {
+  return keys.reduce((acc, key) => {
     const obj1HasKey = key in obj1;
     const obj2HasKey = key in obj2;
     const value1 = obj1[key];

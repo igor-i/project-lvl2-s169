@@ -37,6 +37,13 @@ const compare = (obj1, obj2) => {
         to: value2,
       }];
     }
+    if ((obj1HasKey && obj2HasKey) && _.isObject(value1) && _.isObject(value2)) {
+      return [...acc, {
+        node: key,
+        type: 'nested',
+        children: compare(value1, value2),
+      }];
+    }
     if ((obj1HasKey && obj2HasKey) && (value1 === value2)) {
       return [...acc, {
         node: key,
@@ -57,23 +64,47 @@ const compare = (obj1, obj2) => {
   }, []);
 };
 
-const report = (ast) => {
-  const resultStrings = ast.reduce((acc, node) => {
-    switch (node.type) {
-      case 'changed':
-        return [...acc, ` + ${node.node}: ${node.to}`, ` - ${node.node}: ${node.from}`];
-      case 'removed':
-        return [...acc, ` - ${node.node}: ${node.from}`];
-      case 'added':
-        return [...acc, ` + ${node.node}: ${node.to}`];
-      case 'unchanged':
-        return [...acc, `   ${node.node}: ${node.to}`];
-      default:
-        return acc;
-    }
-  }, []);
+const getSpace = (level) => {
+  const iter = (count, acc) =>
+    (count === level * 3 ? acc : iter(count + 1, [...acc, ' ']));
+  return iter(0, []).join('');
+};
 
-  return ['{', ...resultStrings, '}'].join(eol);
+const objToString = (obj, space = '') => {
+  const str = _.keys(obj).reduce((acc, key) => [...acc, `   ${key}: ${obj[key]}`], []);
+  return (['{', ...str, '}']).join(`${eol}${space}`);
+};
+
+const report = (ast, level = 0) => {
+  const str = ast.map((n) => {
+    switch (n.type) {
+      case 'changed':
+        return [
+          _.isObject(n.to) ?
+            `${getSpace(level)} + ${n.node}: ${objToString(n.to, getSpace(level + 1))}` :
+            `${getSpace(level)} + ${n.node}: ${n.to}`,
+          _.isObject(n.from) ?
+            `${getSpace(level)} - ${n.node}: ${objToString(n.from, getSpace(level + 1))}` :
+            `${getSpace(level)} - ${n.node}: ${n.from}`,
+        ];
+      case 'removed':
+        return _.isObject(n.from) ?
+          `${getSpace(level)} - ${n.node}: ${objToString(n.from, getSpace(level + 1))}` :
+          `${getSpace(level)} - ${n.node}: ${n.from}`;
+      case 'added':
+        return _.isObject(n.to) ?
+          `${getSpace(level)} + ${n.node}: ${objToString(n.to, getSpace(level + 1))}` :
+          `${getSpace(level)} + ${n.node}: ${n.to}`;
+      case 'unchanged':
+        return `${getSpace(level)}   ${n.node}: ${n.to}`;
+      case 'nested':
+        return `${getSpace(level)}   ${n.node}: ${report(n.children, level + 1)}`;
+      default:
+        return n;
+    }
+  });
+
+  return _.flatten(['{', ...str, `${getSpace(level)}}`]).join(eol);
 };
 
 export const genDiff = (pathToFile1, pathToFile2) => {

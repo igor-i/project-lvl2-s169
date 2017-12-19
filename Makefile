@@ -8,7 +8,7 @@ test:
 	npm test
 
 start:
-	npm run babel-node -- src/bin/gendiff.js __tests__/__fixtures__/before.ini __tests__/__fixtures__/after.ini
+	npm run babel-node -- src/bin/gendiff.js __tests__/__fixtures__/before-tree.json __tests__/__fixtures__/after-tree.json
 
 publish:
 	npm publish

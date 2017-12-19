@@ -1,6 +1,6 @@
 {
   "name": "igor-i-generate-diff",
-  "version": "1.0.0-a",
+  "version": "1.1.0-a",
   "description": "This is a Level 2 project in Hexlet.io",
   "main": "dist/index.js",
   "bin": {
@@ -28,7 +28,8 @@
   "homepage": "https://github.com/igor-i/project-lvl2-s169#readme",
   "dependencies": {
     "commander": "*",
-    "readline-sync": "*"
+    "readline-sync": "*",
+    "js-yaml": "*"
   },
   "devDependencies": {
     "babel-cli": "*",

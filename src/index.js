@@ -1,9 +1,19 @@
 import fs from 'fs';
+import yaml from 'js-yaml';
+import path from 'path';
 
-const eol = '\n';
+export const eol = '\n';
 
-const uploadFile = pathToFile =>
-  JSON.parse(fs.readFileSync(pathToFile, 'utf8'));
+const mappingParseContent = {
+  '.json': fileContent => JSON.parse(fileContent),
+  '.yaml': fileContent => yaml.safeLoad(fileContent),
+};
+
+const uploadFile = (pathToFile) => {
+  const fileExtension = path.extname(pathToFile);
+  const fileContent = fs.readFileSync(pathToFile, 'utf8');
+  return mappingParseContent[fileExtension](fileContent);
+};
 
 const compare = (obj1, obj2) => {
   const keys = new Set([...Object.keys(obj1), ...Object.keys(obj2)]);
@@ -46,7 +56,7 @@ const outputReport = (ast) => {
   return ['{', ...resultStrings, '}'].join(eol);
 };
 
-export default (pathToFile1, pathToFile2) => {
+export const genDiff = (pathToFile1, pathToFile2) => {
   const file1 = uploadFile(pathToFile1);
   const file2 = uploadFile(pathToFile2);
   return outputReport(compare(file1, file2));

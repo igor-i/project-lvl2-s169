@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
 import commander from 'commander';
-import { genDiff } from '..';
+import genDiff from '..';
 
 commander
-  .version('1.5.0-a')
+  .version('1.5.1-a')
   .description('Compares two configuration files and shows a difference.')
   .arguments('<firstConfig> <secondConfig>')
   .option('-f, --format [type]', 'Output format[type]', 'pretty')

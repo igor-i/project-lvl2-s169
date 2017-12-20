@@ -1,4 +1,5 @@
-import { genDiff, eol } from '../src';
+import genDiff from '../src';
+import { eol } from '../src/reportgenerators';
 
 const rightFlatResult =
 [

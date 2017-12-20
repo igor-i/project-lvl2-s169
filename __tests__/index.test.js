@@ -14,19 +14,19 @@ const rightFlatResult =
 test('flat json difference', () => {
   const firstConfig = '__tests__/__fixtures__/before.json';
   const secondConfig = '__tests__/__fixtures__/after.json';
-  expect(genDiff(firstConfig, secondConfig)).toBe(rightFlatResult.join(eol));
+  expect(genDiff(firstConfig, secondConfig, 'json')).toBe(rightFlatResult.join(eol));
 });
 
 test('flat yaml difference', () => {
   const firstConfig = '__tests__/__fixtures__/before.yaml';
   const secondConfig = '__tests__/__fixtures__/after.yaml';
-  expect(genDiff(firstConfig, secondConfig)).toBe(rightFlatResult.join(eol));
+  expect(genDiff(firstConfig, secondConfig, 'json')).toBe(rightFlatResult.join(eol));
 });
 
 test('flat ini difference', () => {
   const firstConfig = '__tests__/__fixtures__/before.ini';
   const secondConfig = '__tests__/__fixtures__/after.ini';
-  expect(genDiff(firstConfig, secondConfig)).toBe(rightFlatResult.join(eol));
+  expect(genDiff(firstConfig, secondConfig, 'json')).toBe(rightFlatResult.join(eol));
 });
 
 const rightTreeResult =
@@ -61,17 +61,38 @@ const rightTreeResult =
 test('tree json difference', () => {
   const firstConfig = '__tests__/__fixtures__/before-tree.json';
   const secondConfig = '__tests__/__fixtures__/after-tree.json';
-  expect(genDiff(firstConfig, secondConfig)).toBe(rightTreeResult.join(eol));
+  expect(genDiff(firstConfig, secondConfig, 'json')).toBe(rightTreeResult.join(eol));
 });
 
 test('tree yaml difference', () => {
   const firstConfig = '__tests__/__fixtures__/before-tree.yaml';
   const secondConfig = '__tests__/__fixtures__/after-tree.yaml';
-  expect(genDiff(firstConfig, secondConfig)).toBe(rightTreeResult.join(eol));
+  expect(genDiff(firstConfig, secondConfig, 'json')).toBe(rightTreeResult.join(eol));
 });
 
 test('tree ini difference', () => {
   const firstConfig = '__tests__/__fixtures__/before-tree.ini';
   const secondConfig = '__tests__/__fixtures__/after-tree.ini';
-  expect(genDiff(firstConfig, secondConfig)).toBe(rightTreeResult.join(eol));
+  expect(genDiff(firstConfig, secondConfig, 'json')).toBe(rightTreeResult.join(eol));
+});
+
+const rightPlainReport = [
+  'Property \'timeout\' was updated. From \'50\' to \'20\'',
+  'Property \'proxy\' was removed',
+  'Property \'common.setting4\' was removed',
+  'Property \'common.setting5\' was removed',
+  'Property \'common.setting2\' was added with value: 200',
+  'Property \'common.setting6\' was added with complex value',
+  // 'Property \'common.sites.base\' was added with \'hexlet.io\'',
+  'Property \'common.sites\' was added with complex value',
+  'Property \'group1.baz\' was updated. From \'bars\' to \'bas\'',
+  'Property \'group3\' was removed',
+  'Property \'verbose\' was added with value: true',
+  'Property \'group2\' was added with complex value',
+];
+
+test('plain report', () => {
+  const firstConfig = '__tests__/__fixtures__/before-plain.json';
+  const secondConfig = '__tests__/__fixtures__/after-plain.json';
+  expect(genDiff(firstConfig, secondConfig, 'plain')).toBe(rightPlainReport.join(eol));
 });

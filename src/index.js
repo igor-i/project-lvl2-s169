@@ -64,7 +64,7 @@ const compare = (obj1, obj2) => {
   }, []);
 };
 
-const reportJson = (ast, level = 0) => {
+const reportPretty = (ast, level = 0) => {
   const getSpace = (lev) => {
     const i = (count, acc) =>
       (count === lev * 3 ? acc : i(count + 1, [...acc, ' ']));
@@ -98,7 +98,7 @@ const reportJson = (ast, level = 0) => {
       case 'unchanged':
         return `${getSpace(level)}   ${n.node}: ${n.to}`;
       case 'nested':
-        return `${getSpace(level)}   ${n.node}: ${reportJson(n.children, level + 1)}`;
+        return `${getSpace(level)}   ${n.node}: ${reportPretty(n.children, level + 1)}`;
       default:
         return n;
     }
@@ -138,12 +138,15 @@ const reportPlain = (ast, parents = []) => {
   return res.join(eol);
 };
 
+const reportJson = ast => JSON.stringify(ast);
+
 const mappingReport = {
   json: reportJson,
   plain: reportPlain,
+  pretty: reportPretty,
 };
 
-const report = (ast, format = 'plain') => mappingReport[format](ast);
+const report = (ast, format = 'pretty') => mappingReport[format](ast);
 
 export const genDiff = (pathToFile1, pathToFile2, format) => {
   const fileContent1 = fs.readFileSync(pathToFile1, 'utf8');

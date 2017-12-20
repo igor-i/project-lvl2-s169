@@ -65,11 +65,7 @@ const compare = (obj1, obj2) => {
 };
 
 const reportPretty = (ast, level = 0) => {
-  const getSpace = (lev) => {
-    const i = (count, acc) =>
-      (count === lev * 3 ? acc : i(count + 1, [...acc, ' ']));
-    return i(0, []).join('');
-  };
+  const getSpace = lev => ' '.repeat(lev * 3);
 
   const objToString = (obj, space = '') => {
     const str = _.keys(obj).reduce((acc, key) => [...acc, `   ${key}: ${obj[key]}`], []);

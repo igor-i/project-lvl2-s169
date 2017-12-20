@@ -5,14 +5,19 @@ export const eol = '\n';
 const genPrettyReport = (ast, level = 0) => {
   const getSpace = lev => ' '.repeat(lev * 3);
 
-  const objToString = (obj, space = '') => {
-    const str = _.keys(obj).reduce((acc, key) => [...acc, `   ${key}: ${obj[key]}`], []);
-    return (['{', ...str, '}']).join(`${eol}${space}`);
+  const objToString = (obj, lev) => {
+    const str = _.keys(obj).map(key =>
+      [
+        `   ${key}: `,
+        _.isObject(obj[key]) ? objToString(obj[key], `${lev + 1}`) : `${obj[key]}`,
+      ].join(''));
+
+    return (['{', ...str, '}']).join(`${eol}${getSpace(lev)}`);
   };
 
   const nodeToString = (prefix, nodeKey, nodeValue) => ([
     `${getSpace(level)}${prefix}${nodeKey}: `,
-    _.isObject(nodeValue) ? `${objToString(nodeValue, getSpace(level + 1))}` : nodeValue,
+    _.isObject(nodeValue) ? `${objToString(nodeValue, level + 1)}` : nodeValue,
   ].join(''));
 
   const mappingNodeToString = {

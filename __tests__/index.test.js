@@ -1,5 +1,5 @@
 import genDiff from '../src';
-import { eol } from '../src/reportgenerators';
+import { eol } from '../src/renderers';
 
 const rightFlatResult =
 [
@@ -84,7 +84,6 @@ const rightPlainReport = [
   'Property \'common.setting5\' was removed',
   'Property \'common.setting2\' was added with value: 200',
   'Property \'common.setting6\' was added with complex value',
-  // 'Property \'common.sites.base\' was added with \'hexlet.io\'',
   'Property \'common.sites\' was added with complex value',
   'Property \'group1.baz\' was updated. From \'bars\' to \'bas\'',
   'Property \'group3\' was removed',
@@ -98,7 +97,7 @@ test('plain report', () => {
   expect(genDiff(firstConfig, secondConfig, 'plain')).toBe(rightPlainReport.join(eol));
 });
 
-const rightJsonReport = '[{"node":"host","type":"unchanged","from":"hexlet.io","to":"hexlet.io"},{"node":"timeout","type":"changed","from":50,"to":20},{"node":"proxy","type":"removed","from":"123.234.53.22","to":""},{"node":"verbose","type":"added","from":"","to":true}]';
+const rightJsonReport = '[{"node":"host","type":"unchanged","from":"hexlet.io","to":"hexlet.io"},{"node":"timeout","type":"changed","from":50,"to":20},{"node":"proxy","type":"removed","from":"123.234.53.22"},{"node":"verbose","type":"added","to":true}]';
 
 test('json report', () => {
   const firstConfig = '__tests__/__fixtures__/before.json';

@@ -1,6 +1,6 @@
 {
   "name": "igor-i-generate-diff",
-  "version": "1.6.0-a",
+  "version": "1.0.0",
   "description": "This is a Level 2 project in Hexlet.io",
   "main": "dist/index.js",
   "bin": {

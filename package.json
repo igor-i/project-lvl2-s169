@@ -45,5 +45,16 @@
     "eslint-plugin-jest": "*",
     "jest": "*",
     "jest-cli": "*"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "coverageReporters": [
+      "lcov"
+    ],
+    "testEnvironment": "node",
+    "verbose": true,
+    "modulePathIgnorePatterns": [
+      "<rootDir>/__tests__/__fixtures__"
+    ]
   }
 }
